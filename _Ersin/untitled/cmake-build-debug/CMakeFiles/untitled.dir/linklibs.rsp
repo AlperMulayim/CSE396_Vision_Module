@@ -1,0 +1,1 @@
+C:/OpenCV/mingw-build/install/x86/mingw/lib/libopencv_highgui2413.dll.a C:/OpenCV/mingw-build/install/x86/mingw/lib/libopencv_imgproc2413.dll.a C:/OpenCV/mingw-build/install/x86/mingw/lib/libopencv_core2413.dll.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
