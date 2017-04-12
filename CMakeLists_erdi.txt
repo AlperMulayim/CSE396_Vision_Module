@@ -1,0 +1,19 @@
+cmake_minimum_required(VERSION 3.6)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+project(OpenCVDeneme)
+
+# Where to find CMake modules and OpenCV
+set(OpenCV_DIR "C:\\OpenCV\\mingw-build\\install")
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "C:\\Users\\ERDI ERKMEN\\ClionProjects\\OpenCVDeneme")
+
+
+set(SOURCE_FILES main.cpp)
+add_executable(OpenCVDeneme main.cpp)
+
+# add libs you need
+set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui)
+
+# linking
+target_link_libraries(OpenCVDeneme ${OpenCV_LIBS})
