@@ -22,6 +22,7 @@ int main() {
 void videoCapturing()
 {
     Mat image;
+    Mat outImage;
     char key = 'e';
     time_t start, end;
     int counter = 0;
@@ -73,6 +74,7 @@ void videoCapturing()
         imshow("image : ",image);
         Mat output;
         image.copyTo(output);
+        image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
         GaussianBlur(image, image, Size(7,7), 1.5, 1.5);
         imshow("Gaus Result",image);
@@ -85,6 +87,7 @@ void videoCapturing()
 
         for (int i = 0; i < contours.size(); i++) {
             Scalar color = Scalar(0, 0, 255);
+
             drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
             double area = contourArea(contours[i]);
             Rect boundRect;
@@ -98,7 +101,7 @@ void videoCapturing()
                 string name = "CinaliPos\\" + ss.str() + ".png";
                 ++imageNum;
 
-                imwrite(name, output(boundRect));
+                imwrite(name, outImage(boundRect));
                 imshow("imageCont : ", output);
 
             }
