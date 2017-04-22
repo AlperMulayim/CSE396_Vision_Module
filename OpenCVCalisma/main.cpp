@@ -27,12 +27,12 @@ void videoCapturing()
     int counter = 0;
     double sec;
     double fps;
-
+    int imageNum = 0;
 
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
 
-    VideoCapture capturer(0);
+    VideoCapture capturer(1);
 
     capturer.set(CV_CAP_PROP_FRAME_WIDTH,480);
     capturer.set(CV_CAP_PROP_FRAME_HEIGHT,480);
@@ -69,7 +69,7 @@ void videoCapturing()
         }
 
         String fpsRes = "FPS : " + convert.str();
-        putText(image, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
+       // putText(image, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
         imshow("image : ",image);
         Mat output;
         image.copyTo(output);
@@ -89,10 +89,20 @@ void videoCapturing()
             double area = contourArea(contours[i]);
             Rect boundRect;
             boundRect = boundingRect(contours[i]);
-            rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
-            imshow("imageCont : ",output);
-        }
 
+            if (area > 2000 ) {
+                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
+
+                stringstream ss;
+                ss << imageNum;
+                string name = "CinaliPos\\" + ss.str() + ".png";
+                ++imageNum;
+
+                imwrite(name, output(boundRect));
+                imshow("imageCont : ", output);
+
+            }
+        }
 
     }
 }
