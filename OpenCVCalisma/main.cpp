@@ -2,6 +2,7 @@
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
+#include <opencv/cvaux.h>
 #include <iostream>
 #include <time.h>
 #include <iomanip>
@@ -28,6 +29,8 @@ void videoCapturing()
     double fps;
 
 
+    vector<vector<Point> > contours;
+    vector<Vec4i> hierarchy;
 
     VideoCapture capturer(0);
 
@@ -68,8 +71,27 @@ void videoCapturing()
         String fpsRes = "FPS : " + convert.str();
         putText(image, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
         imshow("image : ",image);
+        Mat output;
+        image.copyTo(output);
+        cvtColor(image, image, COLOR_BGR2GRAY);
+        GaussianBlur(image, image, Size(7,7), 1.5, 1.5);
+        imshow("Gaus Result",image);
+        Mat cannyOut;
+        Canny(image, cannyOut, 0, 30, 3);
+        imshow("Canny Result",cannyOut);
+        GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
+        imshow("GausCanny Result",cannyOut);
+        findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
-
+        for (int i = 0; i < contours.size(); i++) {
+            Scalar color = Scalar(0, 0, 255);
+            drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
+            double area = contourArea(contours[i]);
+            Rect boundRect;
+            boundRect = boundingRect(contours[i]);
+            rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
+            imshow("imageCont : ",output);
+        }
 
 
     }
