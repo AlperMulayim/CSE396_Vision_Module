@@ -7,7 +7,11 @@
 #include <time.h>
 #include <iomanip>
 
-#define IMAGE_SIZE Size(64,128)
+#define IMAGE_SIZE40_40 Size(40,40)
+#define IMAGE_SIZE64_64 Size(64,64)
+#define IMAGE_SIZE128_128 Size(128,128)
+#define IMAGE_SIZE64_128 Size(64,128)
+
 using  namespace cv;
 using  namespace std;
 
@@ -104,13 +108,26 @@ void videoCapturing()
 
                 stringstream ss;
                 ss << imageNumPos;
-                string name = "CinaliPos\\" + ss.str() + ".png";
+                string name = "CinaliPos40_40\\" + ss.str() + ".png";
                 ++imageNumPos;
 
 
                 Mat im = outImage(boundRect);
-                resize(im,im,IMAGE_SIZE);
+                resize(im,im,IMAGE_SIZE40_40);
                 imwrite(name, im);
+
+                name = "CinaliPos64_64\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE64_64);
+                imwrite(name, im);
+
+                name = "CinaliPos64_128\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE64_128);
+                imwrite(name, im);
+
+                name = "CinaliPos128_128\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE128_128);
+                imwrite(name, im);
+
 
                 imwrite(name, im);
                 displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
@@ -122,11 +139,28 @@ void videoCapturing()
 
                 stringstream ss;
                 ss << imageNumNeg;
-                string name = "CinaliNeg\\" + ss.str() + ".png";
+                string name = "CinaliNeg40_40\\" + ss.str() + ".png";
                 ++imageNumNeg;
+
+
                 Mat im = outImage(boundRect);
-                resize(im,im,IMAGE_SIZE);
+                resize(im,im,IMAGE_SIZE40_40);
                 imwrite(name, im);
+
+                name = "CinaliNeg64_64\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE64_64);
+                imwrite(name, im);
+
+                name = "CinaliNeg64_128\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE64_128);
+                imwrite(name, im);
+
+                name = "CinaliNeg128_128\\" + ss.str() + ".png";
+                resize(im,im,IMAGE_SIZE128_128);
+                imwrite(name, im);
+
+
+
                 displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
                 imshow("imageCont : ", output);
             }
