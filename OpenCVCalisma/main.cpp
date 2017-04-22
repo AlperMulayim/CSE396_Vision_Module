@@ -7,10 +7,14 @@
 #include <time.h>
 #include <iomanip>
 
+#define IMAGE_SIZE Size(64,128)
 using  namespace cv;
 using  namespace std;
-void videoCapturing();
 
+void videoCapturing();
+void printTextToVideo(Mat image,String text, Point point);
+string convertDoubleToString(double x);
+void displayFotoNums(Mat output, string message ,double displayNum, Point place);
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
@@ -18,6 +22,7 @@ int main() {
 
     return 0;
 }
+
 
 void videoCapturing()
 {
@@ -28,7 +33,8 @@ void videoCapturing()
     int counter = 0;
     double sec;
     double fps;
-    int imageNum = 0;
+    int imageNumPos = 0;
+    int imageNumNeg = 0;
 
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -71,16 +77,16 @@ void videoCapturing()
 
         String fpsRes = "FPS : " + convert.str();
        // putText(image, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-        imshow("image : ",image);
+       // imshow("image : ",image);
         Mat output;
         image.copyTo(output);
         image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
         GaussianBlur(image, image, Size(7,7), 1.5, 1.5);
-        imshow("Gaus Result",image);
+        //imshow("Gaus Result",image);
         Mat cannyOut;
         Canny(image, cannyOut, 0, 30, 3);
-        imshow("Canny Result",cannyOut);
+        //imshow("Canny Result",cannyOut);
         GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
         imshow("GausCanny Result",cannyOut);
         findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -92,23 +98,60 @@ void videoCapturing()
             double area = contourArea(contours[i]);
             Rect boundRect;
             boundRect = boundingRect(contours[i]);
-
-            if (area > 2000 ) {
+            //displayFotoNums(output,"Area : " ,area,Point(20,120));
+            if (area > 4000 ) {
                 rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
 
                 stringstream ss;
-                ss << imageNum;
+                ss << imageNumPos;
                 string name = "CinaliPos\\" + ss.str() + ".png";
-                ++imageNum;
+                ++imageNumPos;
 
-                imwrite(name, outImage(boundRect));
+
+                Mat im = outImage(boundRect);
+                resize(im,im,IMAGE_SIZE);
+                imwrite(name, im);
+
+                imwrite(name, im);
+                displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
+                // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
                 imshow("imageCont : ", output);
+            }
+            else if( area > 500 && area < 4000 ){
+                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
 
+                stringstream ss;
+                ss << imageNumNeg;
+                string name = "CinaliNeg\\" + ss.str() + ".png";
+                ++imageNumNeg;
+                Mat im = outImage(boundRect);
+                resize(im,im,IMAGE_SIZE);
+                imwrite(name, im);
+                displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
+                imshow("imageCont : ", output);
             }
         }
 
     }
 }
 
+void displayFotoNums(Mat output, string message ,double displayNum, Point place)
+{
 
+    string numstr = convertDoubleToString(displayNum);
+    string textRight = message + numstr;
+    printTextToVideo(output,textRight, place);
+}
 
+void printTextToVideo(Mat image,String text, Point point)
+{
+    putText(image,text, point, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 0));
+}
+
+string convertDoubleToString(double x)
+{
+    ostringstream strs;
+    strs << x;
+    string str = strs.str();
+    return str;
+}
