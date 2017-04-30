@@ -20,6 +20,7 @@ void printTextToVideo(Mat image,String text, Point point);
 string convertDoubleToString(double x);
 void displayFotoNums(Mat output, string message ,double displayNum, Point place);
 void createTheData(Mat outImage, Rect boundRect, stringstream ss);
+void generateHistogram(Mat image);
 
 
 int main() {
@@ -97,6 +98,8 @@ void videoCapturing()
 
         //imshow("Canny Result",cannyOut);
         GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
+
+        //TODO : Change this to Morphology
         threshold(cannyOut,cannyOut,0,255,THRESH_BINARY);
         imshow("GausCanny Result",cannyOut);
         findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
@@ -104,7 +107,7 @@ void videoCapturing()
         for (int i = 0; i < contours.size(); i++) {
             Scalar color = Scalar(0, 0, 255);
 
-            drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
+           // drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
             double area = contourArea(contours[i]);
             Rect boundRect;
             boundRect = boundingRect(contours[i]);
@@ -144,9 +147,9 @@ void videoCapturing()
 
                     radiusM = radiusM / circles.size();
 
-
+                    //center of circle
                     circle(output, centerM, 3, Scalar(0, 255, 255), -1, 8, 0);
-                    // circle outline
+                    // circle drawing for head
                     circle(output, centerM, radiusM, Scalar(0, 255, 255), 3, 8, 0);
 
                 }
@@ -155,7 +158,7 @@ void videoCapturing()
                 displayFotoNums(output,"Radius: ",radiusM,Point(15,120));
                // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                 // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-
+                generateHistogram(output);
 
                 imshow("imageCont : ", output);
             }
@@ -216,4 +219,57 @@ void createTheData(Mat outImage, Rect boundRect, stringstream ss)
     name = "CinaliNeg128_128\\" + ss.str() + ".png";
     resize(im,im,IMAGE_SIZE128_128);
     imwrite(name, im);
+}
+
+void generateHistogram(Mat image)
+{
+    /// Separate the image in 3 places ( B, G and R )
+    vector<Mat> bgr_planes;
+    split( image, bgr_planes );
+
+    /// Establish the number of bins
+    int histSize = 256;
+
+    /// Set the ranges ( for B,G,R) )
+    float range[] = { 0, 256 } ;
+    const float* histRange = { range };
+
+    bool uniform = true; bool accumulate = false;
+
+    Mat b_hist, g_hist, r_hist;
+
+    /// Compute the histograms:
+    calcHist( &bgr_planes[0], 1, 0, Mat(), b_hist, 1, &histSize, &histRange, uniform, accumulate );
+    calcHist( &bgr_planes[1], 1, 0, Mat(), g_hist, 1, &histSize, &histRange, uniform, accumulate );
+    calcHist( &bgr_planes[2], 1, 0, Mat(), r_hist, 1, &histSize, &histRange, uniform, accumulate );
+
+    // Draw the histograms for B, G and R
+    int hist_w = 512; int hist_h = 400;
+    int bin_w = cvRound( (double) hist_w/histSize );
+
+    Mat histImage( hist_h, hist_w, CV_8UC3, Scalar( 0,0,0) );
+
+    /// Normalize the result to [ 0, histImage.rows ]
+    normalize(b_hist, b_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
+    normalize(g_hist, g_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
+    normalize(r_hist, r_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
+
+    /// Draw for each channel
+    for( int i = 1; i < histSize; i++ )
+    {
+        line( histImage, Point( bin_w*(i-1), hist_h - cvRound(b_hist.at<float>(i-1)) ) ,
+              Point( bin_w*(i), hist_h - cvRound(b_hist.at<float>(i)) ),
+              Scalar( 255, 0, 0), 2, 8, 0  );
+        line( histImage, Point( bin_w*(i-1), hist_h - cvRound(g_hist.at<float>(i-1)) ) ,
+              Point( bin_w*(i), hist_h - cvRound(g_hist.at<float>(i)) ),
+              Scalar( 0, 255, 0), 2, 8, 0  );
+        line( histImage, Point( bin_w*(i-1), hist_h - cvRound(r_hist.at<float>(i-1)) ) ,
+              Point( bin_w*(i), hist_h - cvRound(r_hist.at<float>(i)) ),
+              Scalar( 0, 0, 255), 2, 8, 0  );
+    }
+
+    /// Display
+    //namedWindow("calcHist Demo", CV_WINDOW_AUTOSIZE );
+    imshow("Histogram", histImage );
+
 }
