@@ -19,6 +19,9 @@ void videoCapturing();
 void printTextToVideo(Mat image,String text, Point point);
 string convertDoubleToString(double x);
 void displayFotoNums(Mat output, string message ,double displayNum, Point place);
+void createTheData(Mat outImage, Rect boundRect, stringstream ss);
+
+
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
@@ -39,6 +42,7 @@ void videoCapturing()
     double fps;
     int imageNumPos = 0;
     int imageNumNeg = 0;
+    Mat imageGoussOut;
 
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
@@ -86,10 +90,10 @@ void videoCapturing()
         image.copyTo(output);
         image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
-        GaussianBlur(image, image, Size(7,7), 1.5, 1.5);
+        GaussianBlur(image, imageGoussOut, Size(7,7), 1.5, 1.5);
         //imshow("Gaus Result",image);
         Mat cannyOut;
-        Canny(image, cannyOut, 0, 30, 3);
+        Canny(imageGoussOut, cannyOut, 0, 30, 3);
         //imshow("Canny Result",cannyOut);
         GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
         imshow("GausCanny Result",cannyOut);
@@ -112,52 +116,48 @@ void videoCapturing()
                 ++imageNumPos;
 
 
-                Mat im = outImage(boundRect);
-                resize(im,im,IMAGE_SIZE40_40);
-                imwrite(name, im);
-
-                name = "CinaliPos64_64\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE64_64);
-                imwrite(name, im);
-
-                name = "CinaliPos64_128\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE64_128);
-                imwrite(name, im);
-
-                name = "CinaliPos128_128\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE128_128);
-                imwrite(name, im);
+                vector<Vec3f> circles;
+                /// Apply the Hough Transform to find the circles
+                HoughCircles(imageGoussOut, circles, CV_HOUGH_GRADIENT, 1, imageGoussOut.rows/8, 75, 30, 0, 0 );
 
 
-                imwrite(name, im);
+
+                Point centerM;
+                int radiusM = 0;
+
+                if(circles.size() != 0) {
+                    for (size_t i = 0; i < circles.size(); i++) {
+                        Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
+
+                        centerM.x += center.x;
+                        centerM.y += center.y;
+                        radiusM += cvRound(circles[i][2]);
+
+                    }
+
+                    centerM.x = centerM.x / circles.size();
+                    centerM.y = centerM.y / circles.size();
+
+                    radiusM = radiusM / circles.size();
+
+
+                    circle(output, centerM, 3, Scalar(0, 255, 255), -1, 8, 0);
+                    // circle outline
+                    circle(output, centerM, radiusM, Scalar(0, 255, 255), 3, 8, 0);
+                }
                 displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                 // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
+
+
                 imshow("imageCont : ", output);
             }
             else if( area > 500 && area < 4000 ){
-                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
+                rectangle(output, boundRect, Scalar(255, 0, 0), 2, 8, 0);
 
                 stringstream ss;
                 ss << imageNumNeg;
                 string name = "CinaliNeg40_40\\" + ss.str() + ".png";
                 ++imageNumNeg;
-
-
-                Mat im = outImage(boundRect);
-                resize(im,im,IMAGE_SIZE40_40);
-                imwrite(name, im);
-
-                name = "CinaliNeg64_64\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE64_64);
-                imwrite(name, im);
-
-                name = "CinaliNeg64_128\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE64_128);
-                imwrite(name, im);
-
-                name = "CinaliNeg128_128\\" + ss.str() + ".png";
-                resize(im,im,IMAGE_SIZE128_128);
-                imwrite(name, im);
 
 
 
@@ -188,4 +188,24 @@ string convertDoubleToString(double x)
     strs << x;
     string str = strs.str();
     return str;
+}
+
+void createTheData(Mat outImage, Rect boundRect, stringstream ss)
+{
+    string name;
+    Mat im = outImage(boundRect);
+    resize(im,im,IMAGE_SIZE40_40);
+    imwrite(name, im);
+
+    name = "CinaliNeg64_64\\" + ss.str() + ".png";
+    resize(im,im,IMAGE_SIZE64_64);
+    imwrite(name, im);
+
+    name = "CinaliNeg64_128\\" + ss.str() + ".png";
+    resize(im,im,IMAGE_SIZE64_128);
+    imwrite(name, im);
+
+    name = "CinaliNeg128_128\\" + ss.str() + ".png";
+    resize(im,im,IMAGE_SIZE128_128);
+    imwrite(name, im);
 }
