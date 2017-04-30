@@ -94,8 +94,10 @@ void videoCapturing()
         //imshow("Gaus Result",image);
         Mat cannyOut;
         Canny(imageGoussOut, cannyOut, 0, 30, 3);
+
         //imshow("Canny Result",cannyOut);
         GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
+        threshold(cannyOut,cannyOut,0,255,THRESH_BINARY);
         imshow("GausCanny Result",cannyOut);
         findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
@@ -129,9 +131,11 @@ void videoCapturing()
                     for (size_t i = 0; i < circles.size(); i++) {
                         Point center(cvRound(circles[i][0]), cvRound(circles[i][1]));
 
+
                         centerM.x += center.x;
                         centerM.y += center.y;
                         radiusM += cvRound(circles[i][2]);
+
 
                     }
 
@@ -144,8 +148,12 @@ void videoCapturing()
                     circle(output, centerM, 3, Scalar(0, 255, 255), -1, 8, 0);
                     // circle outline
                     circle(output, centerM, radiusM, Scalar(0, 255, 255), 3, 8, 0);
+
                 }
-                displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
+                displayFotoNums(output,"Center X: ",centerM.y,Point(15,80));
+                displayFotoNums(output,"Center Y: ", centerM.x,Point(15,100));
+                displayFotoNums(output,"Radius: ",radiusM,Point(15,120));
+               // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                 // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
 
 
@@ -161,7 +169,7 @@ void videoCapturing()
 
 
 
-                displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
+                //displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
                 imshow("imageCont : ", output);
             }
         }
