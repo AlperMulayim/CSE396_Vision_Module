@@ -84,11 +84,13 @@ void videoCapturing()
             convert << fixed << setprecision(3) << fps;
         }
 
-        String fpsRes = "FPS : " + convert.str();
-       // putText(image, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-       // imshow("image : ",image);
         Mat output;
         image.copyTo(output);
+
+        String fpsRes = "FPS : " + convert.str();
+        putText(output, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
+       // imshow("image : ",image);
+
         image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
         GaussianBlur(image, imageGoussOut, Size(7,7), 1.5, 1.5);
@@ -109,11 +111,19 @@ void videoCapturing()
 
            // drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
             double area = contourArea(contours[i]);
-            Rect boundRect;
-            boundRect = boundingRect(contours[i]);
+            RotatedRect boundRect;
+            boundRect = minAreaRect(contours[i]);
             //displayFotoNums(output,"Area : " ,area,Point(20,120));
             if (area > 4000 ) {
-                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
+                Point2f vertices[4];
+                boundRect.points(vertices);
+                for (int i = 0; i < 4; i++)
+                    line(output, vertices[i], vertices[(i+1)%4], Scalar(0,255,0),2,8,0);
+
+                //gövdeyi çiz
+
+
+//                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
 
                 stringstream ss;
                 ss << imageNumPos;
@@ -124,8 +134,6 @@ void videoCapturing()
                 vector<Vec3f> circles;
                 /// Apply the Hough Transform to find the circles
                 HoughCircles(imageGoussOut, circles, CV_HOUGH_GRADIENT, 1, imageGoussOut.rows/8, 75, 30, 0, 0 );
-
-
 
                 Point centerM;
                 int radiusM = 0;
@@ -156,13 +164,38 @@ void videoCapturing()
                 displayFotoNums(output,"Center X: ",centerM.y,Point(15,80));
                 displayFotoNums(output,"Center Y: ", centerM.x,Point(15,100));
                 displayFotoNums(output,"Radius: ",radiusM,Point(15,120));
-               // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
-                // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-                generateHistogram(output);
+                displayFotoNums(output,"CenterRectX: " ,boundRect.center.y,Point(15,160));
+                displayFotoNums(output,"CenterRectY: " ,boundRect.center.x,Point(15,180));
 
-                imshow("imageCont : ", output);
+                circle(output, boundRect.center, 3, Scalar(255, 0, 255), -1, 8, 0);
+
+                //draw the line to head and body
+               // line(output, boundRect.center, centerM, Scalar(255,0,0));
+
+
+
+                Point temp(0,0);
+
+                double lenght = sqrt(pow((centerM.x - boundRect.center.x),2) + pow((centerM.y - boundRect.center.y),2));
+
+
+                    temp.x = boundRect.center.x -
+                            (centerM.x - boundRect.center.x);
+                    temp.y = boundRect.center.y - (centerM.y - boundRect.center.y);
+
+
+                line(output, temp, boundRect.center, Scalar(255,0,0),2,8,0);
+                // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
+                // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
+                //generateHistogram(output);
+                displayFotoNums(output,"New Point X: " ,temp.x,Point(15,200));
+                displayFotoNums(output,"New Point Y: " ,temp.y,Point(15,220));
+
+                circle(output,temp, 3, Scalar(255, 0, 255), -1, 8, 0);
+
             }
-            else if( area > 500 && area < 4000 ){
+            imshow("imageCont : ", output);
+           /* else if( area > 500 && area < 4000 ){
                 rectangle(output, boundRect, Scalar(255, 0, 0), 2, 8, 0);
 
                 stringstream ss;
@@ -175,6 +208,7 @@ void videoCapturing()
                 //displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
                 imshow("imageCont : ", output);
             }
+            */
         }
 
     }
