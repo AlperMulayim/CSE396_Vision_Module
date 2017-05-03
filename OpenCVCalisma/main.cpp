@@ -202,8 +202,8 @@ void videoCapturing()
                     // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
                     //generateHistogram(output);
 
-                    displayFotoNums(output, "New Point X: ", temp.x, Point(15, 200));
-                    displayFotoNums(output, "New Point Y: ", temp.y, Point(15, 220));
+                    displayFotoNums(output, "New Point X: ", temp.y, Point(15, 200));
+                    displayFotoNums(output, "New Point Y: ", temp.x, Point(15, 220));
 
                     circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
                    // imshow("Body Line ", output);
