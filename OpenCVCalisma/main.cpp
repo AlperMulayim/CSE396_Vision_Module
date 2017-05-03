@@ -188,17 +188,17 @@ void videoCapturing()
 
                     Point temp(0, 0);
 
-                    double lenght = sqrt(
-                            pow((centerM.x - boundRect.center.x), 2) + pow((centerM.y - boundRect.center.y), 2));
 
 
-                    temp.x = boundRect.center.x -
-                             (centerM.x - boundRect.center.x);
-                    temp.y = boundRect.center.y - (centerM.y - boundRect.center.y);
+                    temp.x = (int) (boundRect.center.x -
+                                    (centerM.x - boundRect.center.x));
+                    temp.y = (int) (boundRect.center.y - (centerM.y - boundRect.center.y));
 
+                    if(circles.size() != 0){
+                        line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
+                    }
 
-                    line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
-                    // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
+                        // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                     // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
                     //generateHistogram(output);
 
