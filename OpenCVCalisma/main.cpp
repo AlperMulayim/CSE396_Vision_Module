@@ -6,6 +6,7 @@
 #include <iostream>
 #include <time.h>
 #include <iomanip>
+#include <vector>
 
 #define IMAGE_SIZE40_40 Size(40,40)
 #define IMAGE_SIZE64_64 Size(64,64)
@@ -49,6 +50,8 @@ void videoCapturing()
     vector<Vec4i> hierarchy;
 
     VideoCapture capturer(1);
+    //reduce fps
+    capturer.set(CV_CAP_PROP_FPS, 10);
 
     capturer.set(CV_CAP_PROP_FRAME_WIDTH,480);
     capturer.set(CV_CAP_PROP_FRAME_HEIGHT,480);
@@ -57,6 +60,11 @@ void videoCapturing()
         cout<<"Failed to open camera"<<endl;
         exit(0);
     }
+
+
+    vector<Point> legNode;
+    Point resultP(0,0);
+    Point temp(0, 0);
 
 
     while(key != 'q'){
@@ -93,6 +101,12 @@ void videoCapturing()
 
         image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
+
+        Mat hE;
+        //histagram equalization
+        //equalizeHist( image, hE );
+//        image = hE.clone();
+
         GaussianBlur(image, imageGoussOut, Size(7,7), 1.5, 1.5);
         //imshow("Gaus Result",imageGoussOut);
         Mat cannyOut;
@@ -103,7 +117,19 @@ void videoCapturing()
 
         //TODO : Change this to Morphology
         threshold(cannyOut,cannyOut,0,255,THRESH_BINARY);
-        imshow("GausCanny Result",cannyOut);
+        //fill hole
+        // Floodfill from point (0, 0)
+        Mat im_floodfill = cannyOut.clone();
+        floodFill(im_floodfill, cv::Point(0,0), Scalar(255));
+
+        // Invert floodfilled image
+        Mat im_floodfill_inv;
+        bitwise_not(im_floodfill, im_floodfill_inv);
+
+        // Combine the two images to get the foreground.
+        MatExpr im_out = (cannyOut | im_floodfill_inv);
+
+        imshow("GausCanny Result",im_out);
         findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
         double maxArea = 0;
@@ -185,49 +211,72 @@ void videoCapturing()
                     // line(output, boundRect.center, centerM, Scalar(255,0,0));
 
 
-
-                    Point temp(0, 0);
-
-                    double lenght = sqrt(
-                            pow((centerM.x - boundRect.center.x), 2) + pow((centerM.y - boundRect.center.y), 2));
+                    temp.x = (int) (boundRect.center.x -
+                                    (centerM.x - boundRect.center.x));
+                    temp.y = (int) (boundRect.center.y - (centerM.y - boundRect.center.y));
 
 
-                    temp.x = boundRect.center.x -
-                             (centerM.x - boundRect.center.x);
-                    temp.y = boundRect.center.y - (centerM.y - boundRect.center.y);
-
-
-                    line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
+                    line(output, resultP, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
                     // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                     // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
                     //generateHistogram(output);
 
+
                     displayFotoNums(output, "New Point X: ", temp.y, Point(15, 200));
                     displayFotoNums(output, "New Point Y: ", temp.x, Point(15, 220));
+
+                    //vectoru doldur
+                    legNode.push_back(temp);
+
 
                     circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
                    // imshow("Body Line ", output);
 
                 }
-                imshow("imageCont : ", output);
-                /* else if( area > 500 && area < 4000 ){
-                     rectangle(output, boundRect, Scalar(255, 0, 0), 2, 8, 0);
-
-                     stringstream ss;
-                     ss << imageNumNeg;
-                     string name = "CinaliNeg40_40\\" + ss.str() + ".png";
-                     ++imageNumNeg;
 
 
 
-                     //displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
-                     imshow("imageCont : ", output);
-                 }
-                 */
             }
+
         }
+
+
+//        cerr<<"totalX : " << temp.y << endl;
+//        cerr<<"totalY : " << temp.x << endl;
+
+        if(legNode.size() > 10){
+            legNode.erase(legNode.begin()+0);
+
         }
+
+        cerr << "ilk "<<legNode.size()<<endl;
+        int totalX=0;
+        int totalY=0;
+
+
+        //ortalama al
+        for(int i=0; i<legNode.size(); i++){
+
+            //
+            totalX += legNode[i].x;
+            totalY += legNode[i].y;
+        }
+        if(legNode.size() !=0 ) {
+            totalX = totalX / legNode.size();
+            totalY = totalY / legNode.size();
+            cerr<<"totalX : " << totalX<<endl;
+            cerr<<"totalY : " << totalY<<endl;
+        }
+        resultP.x = totalX;
+        resultP.y = totalY;
+
+//        line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
+//        circle(output, resultP, 3, Scalar(255, 0, 255), -1, 8, 0);
+        imshow("imageCont : ", output);
+
     }
+
+}
 
 
 void displayFotoNums(Mat output, string message ,double displayNum, Point place)
