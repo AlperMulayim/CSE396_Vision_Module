@@ -59,7 +59,6 @@ void videoCapturing()
     }
 
 
-    capturer.
     while(key != 'q'){
         key = waitKey(25);
 
@@ -90,7 +89,7 @@ void videoCapturing()
 
         String fpsRes = "FPS : " + convert.str();
         putText(output, fpsRes , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-       // imshow("image : ",image);
+        // imshow("image : ",image);
 
         image.copyTo(outImage);
         cvtColor(image, image, COLOR_BGR2GRAY);
@@ -138,7 +137,7 @@ void videoCapturing()
 
                     //rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
 
-                   // imshow("Contours : ", output);
+                    // imshow("Contours : ", output);
                     stringstream ss;
                     ss << imageNumPos;
                     string name = "CinaliPos40_40\\" + ss.str() + ".png";
@@ -174,7 +173,7 @@ void videoCapturing()
                         // circle drawing for head
                         circle(output, centerM, radiusM, Scalar(0, 255, 255), 3, 8, 0);
 
-                       // imshow("Head : ", output);
+                        // imshow("Head : ", output);
 
                     }
                     displayFotoNums(output, "Center X: ", centerM.y, Point(15, 80));
@@ -202,7 +201,7 @@ void videoCapturing()
                         line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
                     }
 
-                        // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
+                    // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
                     // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
                     //generateHistogram(output);
 
@@ -210,16 +209,16 @@ void videoCapturing()
                     displayFotoNums(output, "New Point Y: ", temp.x, Point(15, 220));
 
                     circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
-                   // imshow("Body Line ", output);
+                    // imshow("Body Line ", output);
 
                 }
 
             }
 
-            }
-        imshow("imageCont : ", output);
         }
+        imshow("imageCont : ", output);
     }
+}
 
 
 void displayFotoNums(Mat output, string message ,double displayNum, Point place)
