@@ -59,7 +59,9 @@ void CableSlope::videoCapturing() {
             convert << fixed << setprecision(3) << fps;
         }
 
-        detectTheStickMan(image);
+        cout << detectTheStickMan(image) << endl;
+
+
     }
 
 }
@@ -88,12 +90,13 @@ bool CableSlope::detectTheStickMan(Mat stickManFoto) {
     Mat imageGoussOut;
     Mat output;
 
-
     stickManFoto.copyTo(output);
 
 
     vector<vector<Point> > contours;
     vector<Vec4i> hierarchy;
+
+    bool flag = false;
 
     stickManFoto.copyTo(outImage);
     cvtColor(stickManFoto, stickManFoto, COLOR_BGR2GRAY);
@@ -123,14 +126,11 @@ bool CableSlope::detectTheStickMan(Mat stickManFoto) {
     for (int i = 0; i < contours.size(); i++) {
         Scalar color = Scalar(0, 0, 255);
         if (maxArea == contourArea(contours[i])) {
-            // drawContours(output, contours, i, color, 2, 8, hierarchy, 0, Point());
+
             double area = contourArea(contours[i]);
             RotatedRect boundRect;
             boundRect = minAreaRect(contours[i]);
 
-
-            //displayFotoNums(output,"Area : " ,area,Point(20,120));
-            //displayFotoNums(output,"Area : " ,area,Point(20,120));
             if (area > 4000) {
                 Point2f vertices[4];
                 boundRect.points(vertices);
@@ -142,9 +142,6 @@ bool CableSlope::detectTheStickMan(Mat stickManFoto) {
                 displayFotoNums(output, "1 Point Y: ", vertices[1].x, Point(15, 320));
 
                 circle(output, vertices[0], 3, Scalar(0, 255, 255), -1, 8, 0);
-
-//                circle(output, vertices[1], 3, Scalar(0, 127, 127), -1, 8, 0);
-//                circle(output, vertices[3], 3, Scalar(0, 127, 127), -1, 8, 0);
 
                 double lengthX= norm(vertices[0] - vertices[1]);
                 double lengthY= norm(vertices[0] - vertices[3]);
@@ -165,49 +162,14 @@ bool CableSlope::detectTheStickMan(Mat stickManFoto) {
                 displayFotoNums(output, "lengthX :", lengthX, Point(15, 340));
                 displayFotoNums(output, "lengthY :", lengthY, Point(15, 360));
 
-                if(slope > 0 && slope < 0.05)
+                if(slope > 0 && slope < 0.05){
                     displayFotoNums(output, "DIK -> slope :", slope, Point(15, 380));
-
-
-//                vector<Vec3f> circles;
-//                /// Apply the Hough Transform to find the circles
-//                HoughCircles(imageGoussOut, circles, CV_HOUGH_GRADIENT, 1, imageGoussOut.rows / 8, 75, 30, 0, 0);
-
-//                Point centerM;
-//                int radiusM = 0;
-
+                    flag = true;
+                }
 
                 displayFotoNums(output, "CenterRectX: ", boundRect.center.y, Point(15, 160));
                 displayFotoNums(output, "CenterRectY: ", boundRect.center.x, Point(15, 180));
 
-//                circle(output, boundRect.center, 3, Scalar(255, 0, 255), -1, 8, 0);
-
-                //draw the line to head and body
-                // line(output, boundRect.center, centerM, Scalar(255,0,0));
-
-
-
-                Point temp(0, 0);
-
-
-
-//                temp.x = (int) (boundRect.center.x -
-//                                (centerM.x - boundRect.center.x));
-//                temp.y = (int) (boundRect.center.y - (centerM.y - boundRect.center.y));
-//
-//                if(circles.size() != 0){
-//                    line(output, temp, boundRect.center, Scalar(255, 0, 0), 2, 8, 0);
-//                }
-
-                // displayFotoNums(output,"Foto Pos : " ,imageNumPos,Point(15,60));
-                // putText(image, imageNumPos , cvPoint(30,30), FONT_HERSHEY_COMPLEX_SMALL, 0.8, cvScalar(0,0,255), 1);
-                //generateHistogram(output);
-
-                displayFotoNums(output, "New Point X: ", temp.y, Point(15, 200));
-                displayFotoNums(output, "New Point Y: ", temp.x, Point(15, 220));
-
-                circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
-                // imshow("Body Line ", output);
 
             }
 
@@ -215,4 +177,5 @@ bool CableSlope::detectTheStickMan(Mat stickManFoto) {
 
     }
     imshow("imageCont : ", output);
+    return flag;
 }
