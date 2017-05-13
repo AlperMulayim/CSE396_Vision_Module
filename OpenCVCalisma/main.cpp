@@ -16,10 +16,17 @@ using  namespace std;
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
+    char key;
+    StickmanDetector myDetector(1);
 
-    StickmanDetector myDetector;
+    key = 'a';
 
-    myDetector.videoCapturing();
+    while(key != 'q'){
+        key = waitKey(25);
+        myDetector.captureSingleFrame();
+
+    }
+    //myDetector.videoCapturing();
 
     return 0;
 }

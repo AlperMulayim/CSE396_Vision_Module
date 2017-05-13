@@ -19,11 +19,15 @@ using  namespace std;
 
 class StickmanDetector {
 public:
+    StickmanDetector(int camNum);
+
     void videoCapturing();
+    void captureSingleFrame();
     void printTextToVideo(Mat image,String text, Point point);
     string convertDoubleToString(double x);
     void displayFotoNums(Mat output, string message ,double displayNum, Point place);
     bool detectTheStickMan(Mat stickManFoto);
-};
 
+    VideoCapture videoCapturer;
+};
 

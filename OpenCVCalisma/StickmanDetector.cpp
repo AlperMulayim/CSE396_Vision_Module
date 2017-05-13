@@ -4,6 +4,19 @@
 
 #include "StickmanDetector.h"
 
+
+StickmanDetector::StickmanDetector(int camNum) {
+    VideoCapture captureMe(camNum);
+    videoCapturer = captureMe;
+
+    videoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,480);
+    videoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,480);
+
+    if(!videoCapturer.isOpened()){
+        cout<<"Failed to open camera"<<endl;
+        exit(0);
+    }
+}
 void StickmanDetector::videoCapturing() {
 
     Mat image;
@@ -219,6 +232,16 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
     }
     imshow("imageCont : ", output);
 }
+
+void StickmanDetector::captureSingleFrame() {
+    Mat image;
+
+    videoCapturer >> image;
+    imshow("MyImage",image);
+
+    detectTheStickMan(image);
+}
+
 
 
 
