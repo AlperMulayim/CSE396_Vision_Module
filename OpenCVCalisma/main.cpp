@@ -8,6 +8,7 @@
 #include <iomanip>
 
 #include "StickmanDetector.h"
+#include "CableSlope.h"
 
 using  namespace cv;
 using  namespace std;
@@ -18,15 +19,19 @@ int main() {
     std::cout << "Hello, World!" << std::endl;
     char key;
     StickmanDetector myDetector(0);
+    CableSlope mySlope(2);
 
     key = 'a';
 
     while(key != 'q'){
         key = waitKey(25);
-        myDetector.captureSingleFrame();
-        StickManData data = myDetector.getTheCapturedStickMan();
-        data.printTheStickMan();
 
+       if( mySlope.detectSingleFrame()) {
+           myDetector.captureSingleFrame();
+           StickManData data = myDetector.getTheCapturedStickMan();
+
+           data.printTheStickMan();
+       }
     }
     //myDetector.videoCapturing();
 
