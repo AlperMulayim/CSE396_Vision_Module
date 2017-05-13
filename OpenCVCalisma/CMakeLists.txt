@@ -8,10 +8,10 @@ set(OpenCV_DIR "C:\\OpenCV\\mingw-build\\install")
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "C:\\Users\\alper\\ClionProjects\\OpenCVCalisma")
-add_executable(OpenCVCalisma main.cpp)
+add_executable(OpenCVCalisma main.cpp StickManData.cpp StickManData.h StickmanDetector.cpp StickmanDetector.h)
 
 
-set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui)
+set(OpenCV_LIBS opencv_core opencv_imgproc opencv_highgui )
 
 target_link_libraries(OpenCVCalisma ${OpenCV_LIBS})
 
