@@ -2,7 +2,9 @@
 // Created by Alper on 13.05.2017.
 //
 
+#include <iostream>
 #include "StickManData.h"
+
 
 StickManData::StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV) {
     headRadius = headRadiusV;
@@ -10,6 +12,14 @@ StickManData::StickManData(int headRadiusV, int headCenterXV, int headCenterYV, 
     headCenterY = headCenterYV;
     bodyPointX = bodyPointXV;
     bodyPointY = bodyPointYV;
+}
+
+StickManData::StickManData() {
+    headRadius = -1;
+    headCenterX = -1;
+    headCenterY = -1;
+    bodyPointX = -1;
+    bodyPointY = -1;
 }
 
 int StickManData::getHeadRadius() const {
@@ -51,6 +61,13 @@ int StickManData::getBodyPointY() const {
 void StickManData::setBodyPointY(int bodyPointY) {
     this->bodyPointY = bodyPointY;
 }
+
+void StickManData::printTheStickMan() {
+    cout<<"\nRadius : "<<getHeadRadius()<<endl;
+    cout<<"HeadCenter :  ( "<<getHeadCenterX()<<" , "<<getHeadCenterY() <<" ) "<<endl;
+    cout<<"Body Point : ( "<<getBodyPointX()<<" , "<<getBodyPointY()<<" ) "<<endl;
+}
+
 
 
 

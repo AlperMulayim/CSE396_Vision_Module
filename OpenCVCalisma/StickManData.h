@@ -3,6 +3,8 @@
 //
 
 
+#include <istream>
+using  namespace std;
 
 class StickManData {
 private:
@@ -14,7 +16,7 @@ private:
 
 public:
     StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV);
-
+    StickManData();
     int getHeadRadius() const;
 
     void setHeadRadius(int headRadius);
@@ -34,7 +36,7 @@ public:
     int getBodyPointY() const;
 
     void setBodyPointY(int bodyPointY);
-
+    void printTheStickMan();
 
 };
 

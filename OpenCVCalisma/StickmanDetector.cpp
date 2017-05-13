@@ -16,6 +16,7 @@ StickmanDetector::StickmanDetector(int camNum) {
         cout<<"Failed to open camera"<<endl;
         exit(0);
     }
+
 }
 void StickmanDetector::videoCapturing() {
 
@@ -77,10 +78,6 @@ void StickmanDetector::videoCapturing() {
 
 }
 
-
-void StickmanDetector::printTextToVideo(Mat image, String text, Point point) {
-    putText(image,text, point, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 0));
-}
 
 void StickmanDetector::displayFotoNums(Mat output, string message, double displayNum, Point place) {
     string numstr = convertDoubleToString(displayNum);
@@ -225,6 +222,19 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
                 circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
                 // imshow("Body Line ", output);
 
+                theStickMan.setHeadRadius(radiusM);
+                theStickMan.setHeadCenterX(centerM.y);
+                theStickMan.setHeadCenterY(centerM.x);
+                theStickMan.setBodyPointX(temp.y);
+                theStickMan.setBodyPointY(temp.x);
+                //theStickMan.printTheStickMan();
+            } else{
+
+                theStickMan.setHeadRadius(-1);
+                theStickMan.setHeadCenterX(-1);
+                theStickMan.setHeadCenterY(-1);
+                theStickMan.setBodyPointX(-1);
+                theStickMan.setBodyPointY(-1);
             }
 
         }
@@ -240,6 +250,14 @@ void StickmanDetector::captureSingleFrame() {
     imshow("MyImage",image);
 
     detectTheStickMan(image);
+}
+
+void StickmanDetector::printTextToVideo(Mat image, String text, Point point) {
+    putText(image,text, point, FONT_HERSHEY_SIMPLEX, 0.7, Scalar(0, 0, 0));
+}
+
+StickManData StickmanDetector::getTheCapturedStickMan() {
+    return  this->theStickMan;
 }
 
 

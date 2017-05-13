@@ -11,7 +11,7 @@
 #include <iostream>
 #include <time.h>
 #include <iomanip>
-
+#include "StickManData.h"
 
 
 using  namespace cv;
@@ -28,6 +28,8 @@ public:
     void displayFotoNums(Mat output, string message ,double displayNum, Point place);
     bool detectTheStickMan(Mat stickManFoto);
 
+    StickManData getTheCapturedStickMan();
     VideoCapture videoCapturer;
+    StickManData theStickMan;
 };
 
