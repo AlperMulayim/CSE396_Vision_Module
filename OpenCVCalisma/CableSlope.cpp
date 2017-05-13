@@ -96,7 +96,6 @@ string CableSlope::convertDoubleToString(double x) {
 
 bool CableSlope::detectSlope(Mat stickManFoto) {
 
-    Mat outImage;
     Mat imageGoussOut;
     Mat output;
 
@@ -108,8 +107,17 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
 
     bool flag = false;
 
-    stickManFoto.copyTo(outImage);
+
+
+
+
+
     cvtColor(stickManFoto, stickManFoto, COLOR_BGR2GRAY);
+
+    Mat cropImage = Mat (stickManFoto,Rect(0, 150, 640, 300)).clone();
+    stickManFoto = cropImage.clone();
+
+
     GaussianBlur(stickManFoto, imageGoussOut, Size(7,7), 1.5, 1.5);
     //imshow("Gaus Result",imageGoussOut);
     Mat cannyOut;
@@ -141,7 +149,7 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
             RotatedRect boundRect;
             boundRect = minAreaRect(contours[i]);
 
-            if (area > 4000) {
+            if (area > 2000) {
                 Point2f vertices[4];
                 boundRect.points(vertices);
                 for (int i = 0; i < 4; i++) {

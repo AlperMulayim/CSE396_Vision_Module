@@ -18,7 +18,7 @@ using  namespace std;
 int main() {
     std::cout << "Hello, World!" << std::endl;
     char key;
-    StickmanDetector myDetector(0);
+    StickmanDetector myDetector(1);
     CableSlope mySlope(2);
 
     key = 'a';
