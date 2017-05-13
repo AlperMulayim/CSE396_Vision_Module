@@ -59,6 +59,7 @@ void videoCapturing()
     }
 
 
+    capturer.
     while(key != 'q'){
         key = waitKey(25);
 
@@ -99,10 +100,13 @@ void videoCapturing()
         Canny(imageGoussOut, cannyOut, 0, 30, 3);
 
         //imshow("Canny Result",cannyOut);
-        GaussianBlur(cannyOut, cannyOut, Size(19,19), 1.5, 1.5);
+        GaussianBlur(cannyOut, cannyOut, Size(7,7), 1.5, 1.5);
 
         //TODO : Change this to Morphology
         threshold(cannyOut,cannyOut,0,255,THRESH_BINARY);
+
+
+
         imshow("GausCanny Result",cannyOut);
         findContours(cannyOut, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 
@@ -132,7 +136,7 @@ void videoCapturing()
                     //gövdeyi çiz
 
 
-//                rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
+                    //rectangle(output, boundRect, Scalar(0, 255, 0), 2, 8, 0);
 
                    // imshow("Contours : ", output);
                     stringstream ss;
@@ -209,23 +213,11 @@ void videoCapturing()
                    // imshow("Body Line ", output);
 
                 }
-                imshow("imageCont : ", output);
-                /* else if( area > 500 && area < 4000 ){
-                     rectangle(output, boundRect, Scalar(255, 0, 0), 2, 8, 0);
 
-                     stringstream ss;
-                     ss << imageNumNeg;
-                     string name = "CinaliNeg40_40\\" + ss.str() + ".png";
-                     ++imageNumNeg;
-
-
-
-                     //displayFotoNums(output,"Foto Neg : " ,imageNumNeg,Point(15,80));
-                     imshow("imageCont : ", output);
-                 }
-                 */
             }
-        }
+
+            }
+        imshow("imageCont : ", output);
         }
     }
 
