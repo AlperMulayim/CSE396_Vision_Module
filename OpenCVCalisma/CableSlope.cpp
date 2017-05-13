@@ -114,11 +114,11 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
 
     cvtColor(stickManFoto, stickManFoto, COLOR_BGR2GRAY);
 
-    Mat cropImage = Mat (stickManFoto,Rect(0, 150, 640, 300)).clone();
+    Mat cropImage = Mat (stickManFoto,Rect(0, 150, 640, 200)).clone();
     stickManFoto = cropImage.clone();
 
 
-    GaussianBlur(stickManFoto, imageGoussOut, Size(7,7), 1.5, 1.5);
+    GaussianBlur(stickManFoto, imageGoussOut, Size(15,15), 1.5, 1.5);
     //imshow("Gaus Result",imageGoussOut);
     Mat cannyOut;
     Canny(imageGoussOut, cannyOut, 0, 30, 3);
@@ -149,7 +149,7 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
             RotatedRect boundRect;
             boundRect = minAreaRect(contours[i]);
 
-            if (area > 2000) {
+            if (area > 1000) {
                 Point2f vertices[4];
                 boundRect.points(vertices);
                 for (int i = 0; i < 4; i++) {
@@ -180,7 +180,7 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
                 displayFotoNums(output, "lengthX :", lengthX, Point(15, 340));
                 displayFotoNums(output, "lengthY :", lengthY, Point(15, 360));
 
-                if(slope > 0 && slope < 0.05){
+                if(slope > 0 && slope < 0.08){
                     displayFotoNums(output, "DIK -> slope :", slope, Point(15, 380));
                     flag = true;
                 }

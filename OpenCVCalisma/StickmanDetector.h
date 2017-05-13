@@ -11,6 +11,7 @@
 #include <iostream>
 #include <time.h>
 #include <iomanip>
+#include <string>
 #include "StickManData.h"
 
 
@@ -31,5 +32,6 @@ public:
     StickManData getTheCapturedStickMan();
     VideoCapture videoCapturer;
     StickManData theStickMan;
+    int dataNum;
 };
 
