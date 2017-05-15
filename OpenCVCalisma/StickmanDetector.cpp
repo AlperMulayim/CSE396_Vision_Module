@@ -9,8 +9,8 @@ StickmanDetector::StickmanDetector(int camNum) {
     VideoCapture captureMe(camNum);
     videoCapturer = captureMe;
 
-    videoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,480);
-    videoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,480);
+    videoCapturer.set(CV_CAP_PROP_FRAME_WIDTH,280);
+    videoCapturer.set(CV_CAP_PROP_FRAME_HEIGHT,396);
 
     if(!videoCapturer.isOpened()){
         cout<<"Failed to open camera"<<endl;
@@ -229,13 +229,14 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
                 theStickMan.setBodyPointX(temp.y);
                 theStickMan.setBodyPointY(temp.x);
 
-
-                string name = convertDoubleToString(dataNum);
-                name += ".png";
-                imwrite(name,stickManFoto);
-
-                ++dataNum;
-                imshow("THE RESULT  : ", output);
+                string name = "FOTO\\";
+                if(circles.size() != 0 ) {
+                    name += convertDoubleToString(dataNum);
+                    name += ".png";
+                    imwrite(name, output);
+                    ++dataNum;
+                    imshow("THE RESULT  : ", output);
+                }
                 //theStickMan.printTheStickMan();
             } else{
 
@@ -249,7 +250,7 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
         }
 
     }
-    imshow("Detect Video : ", output);
+    imshow("Detect StickMan Video : ", output);
 }
 
 void StickmanDetector::captureSingleFrame() {

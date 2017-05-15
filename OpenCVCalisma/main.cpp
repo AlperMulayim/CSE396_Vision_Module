@@ -26,7 +26,7 @@ int main() {
     while(key != 'q'){
         key = waitKey(25);
 
-       if( mySlope.detectSingleFrame()) {
+      // if( mySlope.detectSingleFrame()) {
            myDetector.captureSingleFrame();
            StickManData data = myDetector.getTheCapturedStickMan();
 
@@ -36,7 +36,7 @@ int main() {
                cout<< "( " << i << ")" <<"------- STOP  --------"<<endl;
                ++i;
            }
-       }
+       //}
 
     }
     //myDetector.videoCapturing();
