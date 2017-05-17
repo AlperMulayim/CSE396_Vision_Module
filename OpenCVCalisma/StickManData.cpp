@@ -6,7 +6,9 @@
 #include "StickManData.h"
 
 
-StickManData::StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV) {
+
+StickManData::StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV, int rectPointXV,
+                           int rectPointYV) {
     headRadius = headRadiusV;
     headCenterX = headCenterXV;
     headCenterY = headCenterYV;
@@ -67,6 +69,8 @@ void StickManData::printTheStickMan() {
     cout<<"HeadCenter :  ( "<<getHeadCenterX()<<" , "<<getHeadCenterY() <<" ) "<<endl;
     cout<<"Body Point : ( "<<getBodyPointX()<<" , "<<getBodyPointY()<<" ) "<<endl;
 }
+
+
 
 
 

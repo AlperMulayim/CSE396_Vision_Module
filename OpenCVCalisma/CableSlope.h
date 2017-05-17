@@ -6,11 +6,7 @@
 
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
-#include <opencv/cvaux.h>
-#include <iostream>
-#include <time.h>
-#include <iomanip>
-#include <cmath>
+
 
 
 

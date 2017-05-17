@@ -14,8 +14,11 @@ private:
     int bodyPointX;
     int bodyPointY;
 
+
+
 public:
-    StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV);
+    StickManData(int headRadiusV, int headCenterXV, int headCenterYV, int bodyPointXV, int bodyPointYV, int rectPointXV,
+                     int rectPointYV);
     StickManData();
     int getHeadRadius() const;
 

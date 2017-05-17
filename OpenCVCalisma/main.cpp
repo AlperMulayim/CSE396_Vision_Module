@@ -18,15 +18,15 @@ using  namespace std;
 int main() {
     std::cout << "Hello, World!" << std::endl;
     char key;
-    StickmanDetector myDetector(2);
-    CableSlope mySlope(1);
+    StickmanDetector myDetector(0);
+    //CableSlope mySlope(1);
     int i = 0;
     key = 'a';
 
     while(key != 'q'){
         key = waitKey(25);
 
-      // if( mySlope.detectSingleFrame()) {
+    //  if( mySlope.detectSingleFrame()) {
            myDetector.captureSingleFrame();
            StickManData data = myDetector.getTheCapturedStickMan();
 
@@ -36,7 +36,8 @@ int main() {
                cout<< "( " << i << ")" <<"------- STOP  --------"<<endl;
                ++i;
            }
-       //}
+       //
+      //}
 
     }
     //myDetector.videoCapturing();

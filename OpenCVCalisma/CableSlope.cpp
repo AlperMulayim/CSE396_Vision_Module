@@ -2,6 +2,8 @@
 // Created by ERDI ERKMEN on 13.05.2017.
 //
 
+#include <time.h>
+#include <iomanip>
 #include "CableSlope.h"
 
 
@@ -108,13 +110,9 @@ bool CableSlope::detectSlope(Mat stickManFoto) {
     bool flag = false;
 
 
-
-
-
-
     cvtColor(stickManFoto, stickManFoto, COLOR_BGR2GRAY);
 
-    Mat cropImage = Mat (stickManFoto,Rect(0, 150, 640, 200)).clone();
+    Mat cropImage = Mat (stickManFoto,Rect(100, 150, 540, 200)).clone();
     stickManFoto = cropImage.clone();
 
 

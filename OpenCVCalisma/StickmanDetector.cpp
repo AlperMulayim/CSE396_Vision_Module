@@ -100,6 +100,7 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
     Mat output;
 
 
+
     stickManFoto.copyTo(output);
 
 
@@ -141,11 +142,15 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
 
 
             //displayFotoNums(output,"Area : " ,area,Point(20,120));
-            if (area > 4000) {
+            if (area > 3000) {
                 Point2f vertices[4];
                 boundRect.points(vertices);
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++) {
                     line(output, vertices[i], vertices[(i + 1) % 4], Scalar(0, 255, 0), 2, 8, 0);
+                }
+
+
+
 
                 //gövdeyi çiz
 
@@ -223,11 +228,25 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
                 circle(output, temp, 3, Scalar(255, 0, 255), -1, 8, 0);
                 // imshow("Body Line ", output);
 
+
+
+
+
+                Point2f topLeft(centerM.x-radiusM, centerM.y-radiusM);
+                circle(output,topLeft, 2, Scalar(0, 255, 255), 3, 8, 0);
+
+
+
+               // circle(output, vertices[2], 2, Scalar(0, 255, 255), 3, 8, 0);
+
                 theStickMan.setHeadRadius(radiusM);
                 theStickMan.setHeadCenterX(centerM.y);
                 theStickMan.setHeadCenterY(centerM.x);
                 theStickMan.setBodyPointX(temp.y);
                 theStickMan.setBodyPointY(temp.x);
+                theStickMan.setRectPointX((int) topLeft.y);
+                theStickMan.setRectPointY((int) topLeft.x);
+
 
                 string name = "FOTO\\";
                 if(circles.size() != 0 ) {
@@ -240,11 +259,14 @@ bool StickmanDetector::detectTheStickMan(Mat stickManFoto) {
                 //theStickMan.printTheStickMan();
             } else{
 
+
                 theStickMan.setHeadRadius(-1);
                 theStickMan.setHeadCenterX(-1);
                 theStickMan.setHeadCenterY(-1);
                 theStickMan.setBodyPointX(-1);
                 theStickMan.setBodyPointY(-1);
+                theStickMan.setRectPointX(-1);
+                theStickMan.setRectPointY(-1);
             }
 
         }
@@ -257,9 +279,22 @@ void StickmanDetector::captureSingleFrame() {
     Mat image;
 
     videoCapturer >> image;
-    imshow("MyImage",image);
 
-    detectTheStickMan(image);
+    imshow("MyRotImage",image);
+    Point2f src_center(image.cols/2.0F, image.rows/2.0F);
+    Mat rot_mat = getRotationMatrix2D(src_center, 270, 1.0);
+    Mat dst;
+    warpAffine(image, dst, rot_mat,  image.size());
+
+    imshow("MyRotImage",dst);
+
+
+    //sadece 1. ve 3. parametreleri kurcala
+    Mat cropImage = Mat (dst,Rect(35, 0, 285, 250)).clone();
+
+
+    detectTheStickMan(cropImage);
+
 }
 
 void StickmanDetector::printTextToVideo(Mat image, String text, Point point) {
